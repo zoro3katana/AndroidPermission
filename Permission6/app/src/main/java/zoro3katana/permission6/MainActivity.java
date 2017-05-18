@@ -42,7 +42,7 @@ import static zoro3katana.permission6.AccessPermissions.checkAndRequestPermissio
 public class MainActivity extends AppCompatActivity {
 
     Switch swWifi, swBluetooth, sw3g, swGps, swRotate, swSilent;
-    Button btnShowApp, btnWifiInfo;
+    Button btnShowApp, btnWifiInfo, btnRunningApp;
     TextView tvChangeSize;
     SeekBar brightbar, fonsize;
     private int brightness;
@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        checkAndRequestPermissions(MainActivity.this);
 
         mapping();
 
@@ -106,7 +108,9 @@ public class MainActivity extends AppCompatActivity {
                         + "LinkSpeed: " + hashMapWifiInfo.get("LinkSpeed") + "\n"
                         + "NetworkId: " + hashMapWifiInfo.get("NetworkId") + "\n"
                         + "Rssi: " + hashMapWifiInfo.get("Rssi") + "\n"
-                        + "SupplicantState: " + hashMapWifiInfo.get("SupplicantState") + "\n");
+                        + "SupplicantState: " + hashMapWifiInfo.get("SupplicantState") + "\n"
+                        + "Security: " + hashMapWifiInfo.get("Security") + "\n");
+
                 dialog.setNegativeButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -123,6 +127,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        btnRunningApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, RunningAppActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void mapping() {
@@ -136,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
         fonsize = (SeekBar) findViewById(R.id.sb_fontsize);
         tvChangeSize = (TextView) findViewById(R.id.tv_fontsize);
         btnWifiInfo = (Button) findViewById(R.id.btn_wifiinfo);
+        btnRunningApp = (Button) findViewById(R.id.btn_runningapp);
     }
 
     private void turnWifi() {
@@ -187,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
             hashMapWifiInfo.put("NetworkId", String.valueOf(wifiInfo.getNetworkId()));
             hashMapWifiInfo.put("Rssi", String.valueOf(wifiInfo.getRssi()));
             hashMapWifiInfo.put("SupplicantState", String.valueOf(wifiInfo.getSupplicantState()));
+            hashMapWifiInfo.put("Security", getWifiSecurityType());
         }
         Log.i("--------- wifi info", hashMapWifiInfo.toString());
         String a = getWifiSecurityType();
@@ -194,15 +207,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String getWifiSecurityType() {
+        String SecurityType = "";
         wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        checkAndRequestPermissions(MainActivity.this);
-
-        Intent intent = new Intent(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-        intent.setData(Uri.parse("package:" + MainActivity.this.getPackageName()));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getApplicationContext().startActivity(intent);
-
-
         wifi.startScan();
 
         List<ScanResult> networkList = wifi.getScanResults();
@@ -212,22 +218,27 @@ public class MainActivity extends AppCompatActivity {
         if (networkList != null) {
             for (ScanResult network : networkList) {
                 //check if current connected SSID
-                if (currentSSID.equals(network.SSID)) {
+                if (currentSSID.equals("\"" + network.SSID + "\"")) {
                     //get capabilities of current connection
                     String Capabilities = network.capabilities;
                     Log.d(">>>>>>>>>>>>>>>>>>>>", network.SSID + " capabilities : " + Capabilities);
 
+                    if (Capabilities.contains("WPA")) {
+                        SecurityType += "WPA ";
+                    }
                     if (Capabilities.contains("WPA2")) {
-                        //do something
-                    } else if (Capabilities.contains("WPA")) {
-                        //do something
-                    } else if (Capabilities.contains("WEP")) {
-                        //do something
+                        SecurityType += "WPA2 ";
+                    }
+                    if (Capabilities.contains("PSK")) {
+                        SecurityType += "PSK ";
+                    }
+                    if (Capabilities.contains("WEP")) {
+                        SecurityType += "WEP ";
                     }
                 }
             }
         }
-        return "";
+        return SecurityType;
     }
 
     private static String getWifiMacAddress() {
@@ -254,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
                 return buf.toString();
             }
         } catch (Exception ex) {
-        } // for now eat exceptions
+        }
         return "";
     }
 
@@ -357,17 +368,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    checkAndRequestPermissions(MainActivity.this);
                     // Turn on GPS
-                    Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
+                    /*Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
                     intent.putExtra("enabled", true);
-                    sendBroadcast(intent);
+                    sendBroadcast(intent);*/
                 } else {
-                    checkAndRequestPermissions(MainActivity.this);
                     // Turn off GPS
-                    Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
+                    /*Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
                     intent.putExtra("enabled", false);
-                    sendBroadcast(intent);
+                    sendBroadcast(intent);*/
                 }
 
                 // Check status after change
