@@ -11,8 +11,6 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.REBOOT" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
@@ -21,6 +19,11 @@
 
     <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
     <action android:name="android.net.wifi.SCAN_RESULTS" />
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -37,7 +40,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".AppInfoActivity" />
-        <activity android:name=".RunningAppActivity"></activity>
+        <activity android:name=".RunningAppActivity" />
+        <activity android:name=".StorageActivity" />
+        <activity android:name=".ExternalStorageActivity"></activity>
     </application>
 
 </manifest>

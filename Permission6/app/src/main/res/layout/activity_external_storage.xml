@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="zoro3katana.permission6.ExternalStorageActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#d9baba"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/edt_external_write_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="File name" />
+
+        <EditText
+            android:id="@+id/edt_external_write_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Content" />
+
+        <Button
+            android:id="@+id/btn_external_write"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SAVE TO EXTERNAL" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#a3b2f2"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/edt_external_read_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="File name" />
+
+        <Button
+            android:id="@+id/btn_external_read"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="READ FROM EXTERNAL" />
+
+        <TextView
+            android:id="@+id/txtv_external_read_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,5 +1,6 @@
 package zoro3katana.permission6;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -37,12 +38,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import static zoro3katana.permission6.AccessPermissions.checkAndRequestPermissions;
+import static zoro3katana.permission6.AccessPermissions.initPermission;
 
 public class MainActivity extends AppCompatActivity {
 
     Switch swWifi, swBluetooth, sw3g, swGps, swRotate, swSilent;
-    Button btnShowApp, btnWifiInfo, btnRunningApp;
+    Button btnShowApp, btnWifiInfo, btnRunningApp, btnStorage;
     TextView tvChangeSize;
     SeekBar brightbar, fonsize;
     private int brightness;
@@ -70,8 +71,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        checkAndRequestPermissions(MainActivity.this);
-
         mapping();
 
         turnWifi();
@@ -95,6 +94,9 @@ public class MainActivity extends AppCompatActivity {
         btnWifiInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Must access location to get type of wifi security
+                initPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
+                initPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION);
                 getWifiInfo();
                 final AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
                 dialog.setCancelable(true);
@@ -134,6 +136,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        btnStorage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ExternalStorageActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void mapping() {
@@ -148,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
         tvChangeSize = (TextView) findViewById(R.id.tv_fontsize);
         btnWifiInfo = (Button) findViewById(R.id.btn_wifiinfo);
         btnRunningApp = (Button) findViewById(R.id.btn_runningapp);
+        btnStorage = (Button) findViewById(R.id.btn_storage);
     }
 
     private void turnWifi() {
@@ -161,13 +171,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    checkAndRequestPermissions(MainActivity.this);
                     // Turn on Wifi
                     wifi.setWifiEnabled(true);
                     wifiEnabled = true;
 
                 } else {
-                    checkAndRequestPermissions(MainActivity.this);
                     // Turn off Wifi
                     wifi.setWifiEnabled(false);
                     wifiEnabled = false;
@@ -210,7 +218,6 @@ public class MainActivity extends AppCompatActivity {
         String SecurityType = "";
         wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         wifi.startScan();
-
         List<ScanResult> networkList = wifi.getScanResults();
         WifiInfo wi = wifi.getConnectionInfo();
         String currentSSID = wi.getSSID();
@@ -301,7 +308,6 @@ public class MainActivity extends AppCompatActivity {
 
                     if (null != setMobileDataEnabledMethod) {
                         try {
-                            checkAndRequestPermissions(MainActivity.this);
                             setMobileDataEnabledMethod.invoke(telephonyManager, true);
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
@@ -335,11 +341,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    checkAndRequestPermissions(MainActivity.this);
                     // Turn on Bluetooth
                     bluetoothAdapter.enable();
                 } else {
-                    checkAndRequestPermissions(MainActivity.this);
                     // Turn off Bluetooth
                     bluetoothAdapter.disable();
                 }
