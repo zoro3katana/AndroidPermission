@@ -40,10 +40,10 @@ import java.util.List;
 
 import static zoro3katana.permission6.AccessPermissions.initPermission;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     Switch swWifi, swBluetooth, sw3g, swGps, swRotate, swSilent;
-    Button btnShowApp, btnWifiInfo, btnRunningApp, btnStorage;
+    Button btnShowApp, btnWifiInfo, btnRunningApp, btnStorage, btnSystemInfo;
     TextView tvChangeSize;
     SeekBar brightbar, fonsize;
     private int brightness;
@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean wifiEnabled;
     private boolean cellcularEnabled;
     private boolean gpsEnabled;
-    private boolean rotated;
 
     WifiManager wifi;
     HashMap<String, String> hashMapWifiInfo = null;
@@ -70,30 +69,44 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mapping();
-
         turnWifi();
-
         turnBluetooth();
-
         turnCellular();
-
         turnGps();
-
         rotate();
-
         turnAudio();
-
         turnAudio();
-
         adjustBrightness();
-
         changeFontSize();
 
-        btnWifiInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnWifiInfo.setOnClickListener(this);
+        btnShowApp.setOnClickListener(this);
+        btnRunningApp.setOnClickListener(this);
+        btnStorage.setOnClickListener(this);
+        btnSystemInfo.setOnClickListener(this);
+    }
+
+    private void mapping() {
+        swWifi = (Switch) findViewById(R.id.sw_wifi);
+        swBluetooth = (Switch) findViewById(R.id.sw_bluetooth);
+        sw3g = (Switch) findViewById(R.id.sw_3g);
+        swGps = (Switch) findViewById(R.id.sw_gps);
+        swRotate = (Switch) findViewById(R.id.sw_rotate);
+        swSilent = (Switch) findViewById(R.id.sw_silent);
+        btnShowApp = (Button) findViewById(R.id.btn_showapp);
+        fonsize = (SeekBar) findViewById(R.id.sb_fontsize);
+        tvChangeSize = (TextView) findViewById(R.id.tv_fontsize);
+        btnWifiInfo = (Button) findViewById(R.id.btn_wifiinfo);
+        btnRunningApp = (Button) findViewById(R.id.btn_runningapp);
+        btnStorage = (Button) findViewById(R.id.btn_storage);
+        btnSystemInfo = (Button) findViewById(R.id.btn_system_info);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_wifiinfo:
                 // Must access location to get type of wifi security
                 initPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
                 initPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -120,44 +133,24 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 dialog.show();
-            }
-        });
-        btnShowApp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AppInfoActivity.class);
-                startActivity(intent);
-            }
-        });
-        btnRunningApp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, RunningAppActivity.class);
-                startActivity(intent);
-            }
-        });
-        btnStorage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ExternalStorageActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
-
-    private void mapping() {
-        swWifi = (Switch) findViewById(R.id.sw_wifi);
-        swBluetooth = (Switch) findViewById(R.id.sw_bluetooth);
-        sw3g = (Switch) findViewById(R.id.sw_3g);
-        swGps = (Switch) findViewById(R.id.sw_gps);
-        swRotate = (Switch) findViewById(R.id.sw_rotate);
-        swSilent = (Switch) findViewById(R.id.sw_silent);
-        btnShowApp = (Button) findViewById(R.id.btn_showapp);
-        fonsize = (SeekBar) findViewById(R.id.sb_fontsize);
-        tvChangeSize = (TextView) findViewById(R.id.tv_fontsize);
-        btnWifiInfo = (Button) findViewById(R.id.btn_wifiinfo);
-        btnRunningApp = (Button) findViewById(R.id.btn_runningapp);
-        btnStorage = (Button) findViewById(R.id.btn_storage);
+                break;
+            case R.id.btn_showapp:
+                Intent intentShowApp = new Intent(MainActivity.this, AppInfoActivity.class);
+                startActivity(intentShowApp);
+                break;
+            case R.id.btn_runningapp:
+                Intent intentRunningApp = new Intent(MainActivity.this, RunningAppActivity.class);
+                startActivity(intentRunningApp);
+                break;
+            case R.id.btn_storage:
+                Intent intentStorage = new Intent(MainActivity.this, ExternalStorageActivity.class);
+                startActivity(intentStorage);
+                break;
+            case R.id.btn_system_info:
+                Intent intentSystemInfo = new Intent(MainActivity.this, SystemInfoActivity.class);
+                startActivity(intentSystemInfo);
+                break;
+        }
     }
 
     private void turnWifi() {
@@ -548,4 +541,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 }

@@ -42,7 +42,11 @@
         <activity android:name=".AppInfoActivity" />
         <activity android:name=".RunningAppActivity" />
         <activity android:name=".StorageActivity" />
-        <activity android:name=".ExternalStorageActivity"></activity>
+        <activity android:name=".ExternalStorageActivity" />
+        <activity android:name=".SystemInfoActivity" />
+        <activity android:name=".HardwareInfoActivity" />
+        <activity android:name=".SoftwareInfoActivity" />
+        <activity android:name=".BatteryInfoActivity"></activity>
     </application>
 
 </manifest>
